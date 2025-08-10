@@ -1,9 +1,33 @@
 import { mountOverlay } from "./components/PlayPauseButton/mount";
 
+console.log("PlotParty content script loaded on:", window.location.href);
+
+// Listen for messages from the popup
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  console.log("Content script received message:", message);
+  
+  if (message.action === "toggleOverlay") {
+    console.log("Toggling overlay...");
+    mountOverlay();
+    sendResponse({ success: true, action: "toggleOverlay" });
+  }
+  
+  if (message.action === "checkOverlayState") {
+    const isMounted = document.getElementById("yt-overlay-root") !== null;
+    console.log("Overlay state checked:", isMounted);
+    sendResponse({ overlayMounted: isMounted });
+  }
+  
+  // Always return true to indicate we'll send a response asynchronously
+  return true;
+});
+
 function initIfVideoExists() {
+  console.log("initIfVideoExists");
   const video = document.querySelector("video");
   if (video) {
-    mountOverlay();
+    // Don't auto-mount on page load anymore
+    // mountOverlay();
   }
 }
 
