@@ -40,10 +40,14 @@ export const PlayPauseButton = (props: PlayPauseButtonProps) => {
 
     ws.onmessage = (event) => {
       console.log("WebSocket message received:", event.data);
-      const video = document.querySelector("video");
-      if (video) {
-        video.paused ? video.play() : video.pause();
-      }
+             const video = document.querySelector("video");
+       if (video) {
+         if (video.paused) {
+           video.play();
+         } else {
+           video.pause();
+         }
+       }
     };
 
     ws.onerror = (error) => {
